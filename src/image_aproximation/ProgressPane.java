@@ -24,7 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class ProgressPane extends JFrame {
 
-    private int pop_count, WIDTH, HEIGHT,
+    private int pop_count, WIDTH, HEIGHT, time = 0,
             cols = 5, rows, gens, survivors, pop_size, fitness_prec;
     private GridBagConstraints constr;
     private Container pane;
@@ -33,7 +33,8 @@ public class ProgressPane extends JFrame {
     private double mut_prop, scale_factor, lambda;
     private LinkedList<IInd> individuals;
     private BufferedImage orig;
-    JLabel gen_label, mut_label, l_label, s_label;
+    JLabel gen_label, mut_label, l_label, s_label, poly_label,
+            time_label, scale_label, fit_label;
     JButton shot_btt;
     Color bg_col;
 
@@ -60,6 +61,10 @@ public class ProgressPane extends JFrame {
         mut_label = new JLabel("Mutation propability: " + Double.toString(mut_prop));
         l_label = new JLabel("Lambda parameter: " + Double.toString(lambda));
         s_label = new JLabel("Number of survivors: " + Integer.toString(survivors));
+        poly_label = new JLabel("Number of polygons: " + pop_size);
+        time_label = new JLabel("Elapsed time: 0:00:00");
+        fit_label = new JLabel("Fitness precision: " + fitness_prec);
+        scale_label = new JLabel("Scale factor: " + scale_factor);
         shot_btt = new JButton("screenshot");
         final JFrame fr = this;
         shot_btt.addActionListener(new ActionListener() {
@@ -82,7 +87,7 @@ public class ProgressPane extends JFrame {
             }
         });
         pane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        constr.gridwidth = cols;
+        constr.gridwidth = cols / 2;
         constr.gridy = 0;
         pane.add(gen_label, constr);
         constr.gridy = 1;
@@ -91,10 +96,19 @@ public class ProgressPane extends JFrame {
         pane.add(l_label, constr);
         constr.gridy = 3;
         pane.add(s_label, constr);
+        
         constr.gridy = 4;
-        pane.add(new JLabel("Number of polygons: " + pop_size), constr);
-        constr.gridy = 5;
         pane.add(shot_btt, constr);
+        
+        constr.gridx = cols / 2;
+        constr.gridy = 0;
+        pane.add(time_label, constr);
+        constr.gridy = 1;
+        pane.add(poly_label, constr);
+        constr.gridy = 2;
+        pane.add(scale_label, constr);
+        constr.gridy = 3;
+        pane.add(fit_label, constr);
         polygon = new PolyShape(0, 0);
         polygon.setScale(p.getScale());
         polygon.setVertices(p.getPoints());
@@ -102,6 +116,21 @@ public class ProgressPane extends JFrame {
         initPopVis();
         pack();
         setVisible(true);
+        
+        Timer t = new Timer(10, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                ++time;
+                int hours = time / 3600;
+                int rem = time - hours * 3600;
+                int mins = rem / 60;
+                rem -= mins * 60;
+                String result = String.format("%02d:%02d:%02d", hours, mins, rem );
+                time_label.setText("Elapsed time: " + result);
+            }
+        });
+        t.start();
     }
 
     public void setMutProp(double mp) {
@@ -126,14 +155,26 @@ public class ProgressPane extends JFrame {
     
     public void setScaleF(double f) {
         scale_factor = f;
-        l_label.setText("Lambda parameter: " + Double.toString(lambda));
+        scale_label.setText("Scale factor: " + scale_factor);
         for(IInd p : individuals) {
             p.setScaleF(scale_factor);
         }
     }
     
+    public void changeCount(boolean incr) {
+        for(IInd i : individuals) {
+            i.changeCount(incr);
+        }
+        if(incr) {
+            poly_label.setText("Number of polygons: " + (++pop_size));
+        } else if(pop_size > 0) {
+            poly_label.setText("Number of polygons: " + (--pop_size));
+        }
+    }
+    
     public void setFitnessP(int p) {
         fitness_prec = p;
+        fit_label.setText("Fitness precision: " + fitness_prec);
         population.setFitnessP(p);
     }
 
