@@ -1,20 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package image_aproximation;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * serves to maintain the population
  */
 public class Population {
 
@@ -43,6 +35,12 @@ public class Population {
     }
     
 
+    /**
+     * 
+     * @param max maximal number which should be returned
+     * @return generates a number in range [0; max - 1]
+     * probability of each number is driven by the exponential distribution
+     */
     public int exp(int max) {
         double u = Math.random();
         u = Math.log(1 -u) / (-lambda);
@@ -51,6 +49,11 @@ public class Population {
         return gen;
     }
 
+    /**
+     * 
+     * @param rep whether repaint or not
+     * iterates through all the individuals and creates a new generation
+     */
     public synchronized void reproduce(boolean rep) {
         gen_count++;
         for(IInd i : individuals) {

@@ -72,6 +72,12 @@ public class GUI {
         main_frame.pack();
         main_frame.setVisible(true);
 
+        main_frame.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mousePressed(MouseEvent e) {
+                poly_panel.setAdding(false);
+            }
+        });
     }
 
     /**
@@ -84,7 +90,7 @@ public class GUI {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                poly_panel.setAdding();
+                poly_panel.setAdding(true);
             }
         });
 

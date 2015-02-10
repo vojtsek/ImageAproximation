@@ -1,21 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package image_aproximation;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.Graphics;    
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * class which serves to model the polygon using mouse
  */
 public class PolyPanel extends JPanel {
     private final int HEIGHT = 200;
@@ -38,26 +33,45 @@ public class PolyPanel extends JPanel {
         });
     }
     
-    public void setAdding() {
-        adding = true;
-        polygon.setScale(1.0);
-        polygon.setCol(Color.GREEN);
+    /**
+     * 
+     * @param add whether adding or not
+     * switch between adding states
+     */
+    public void setAdding(boolean add) {
+        if(add) {
+            adding = true;
+            polygon.setScale(1.0);
+            polygon.setCol(Color.GREEN);
+        } else {
+            adding = false;
+            polygon.setScale(1.0);
+            polygon.setCol(Color.WHITE);
+        }
         repaint();
     }
     
+    /**
+     * resets the polygon
+     */
     public void reset() {
         polygon = new PolyShape(WIDTH / 2, HEIGHT / 2);
-        repaint();
-        adding = false;
+        setAdding(false);
     }
     
+    /**
+     * removes the last added vertex
+     */
     public void remove() {
-        adding = false;
-        polygon.setCol(Color.WHITE);
         polygon.remove();
-        repaint();
+        setAdding(false);
     }
     
+    /**
+     * 
+     * @param g Graphics instance
+     * draw a polygon, uses a polygon class
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

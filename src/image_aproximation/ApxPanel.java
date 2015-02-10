@@ -109,11 +109,11 @@ public class ApxPanel extends JPanel implements IInd {
             int x[] = new int[shape.getCount()];
             int y[] = new int[shape.getCount()];
             int j = 1, xx, yy;
-            shape.basePoint.x = polygons.get(i).x;
-            shape.basePoint.y = polygons.get(i).y;
+            shape.base_point.x = polygons.get(i).x;
+            shape.base_point.y = polygons.get(i).y;
             double rot = polygons.get(i).rotation;
-            xx = shape.basePoint.x;
-            yy = shape.basePoint.y;
+            xx = shape.base_point.x;
+            yy = shape.base_point.y;
             x[0] = xx;
             y[0] = yy;
             for (Point p : shape.getPoints()) {
@@ -169,9 +169,9 @@ public class ApxPanel extends JPanel implements IInd {
         for (int i = 0; i < size; i++) {
             AReproductable it = polygons.get(i), it1 = l1.get(i), it2 = l2.get(i);
             double r = Math.random();
-            /*if (r < mut_prob) {
+            if (r < mut_prob) {
                 it1 = it2 = randPolygon(rand);
-            }*/
+            }
             if (r < 0.5) {
                 it.setX(it2.getX());
             } else {
@@ -198,16 +198,6 @@ public class ApxPanel extends JPanel implements IInd {
             } else {
                 it.setRotation(it1.getRotation());
             }
-            if (Math.random() < mut_prob)
-                it.setColor(randColor());
-            if (Math.random() < mut_prob)
-                it.setScale(Math.random() * scale_factor);
-            if (Math.random() < mut_prob)
-                it.setRotation(Math.random() * Math.PI * 2);
-            if (Math.random() < mut_prob)
-                it.setX((int)(Math.random() * WIDTH));
-            if (Math.random() < mut_prob)
-                it.setY((int)(Math.random() * HEIGHT));
         }
 
     }
