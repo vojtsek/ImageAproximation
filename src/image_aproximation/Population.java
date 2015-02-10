@@ -56,18 +56,21 @@ public class Population {
             i.computeFitness(fitness_prec);
         }
         Collections.sort(individuals);
-        int i = 0;
+        int i = 0, size = individuals.size();
         IInd i1, i2;
         
+        LinkedList<IInd> n_individuals = new LinkedList<>();
         for(IInd ind : individuals) {
-            if (i++ < survivors) continue;
+           // if (i++ < survivors) continue;
             i1 = individuals.get(exp(pop_count));
             i2 = individuals.get(exp(pop_count));
-            ind.setContent(i1, i2);
-            ind.refresh((gen_count % 30) == 0);
-            if (rep)
-                ind.repaint();
+            n_individuals.add(ind.setContent(i1, i2, false));
         }
-        
+        for(int j = 0; j < size; j++) {
+            IInd ind = individuals.get(j);
+            ind.setContent(n_individuals.get(j).getList());
+            ind.refresh();
+            ind.repaint();
+        }
     }
 }
