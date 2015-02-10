@@ -27,8 +27,9 @@ public class ApxPanel extends JPanel implements IInd {
     private int WIDTH;
     private int HEIGHT;
     private int poly_count;
-    private int initialized = 0;
+    private int count = 0;
     private double mut_prob, scale_factor;
+    private int MAX_POLY_COUNT = 300;
     private Graphics2D g2;
     private LinkedList<PolyInst> polygons;
     BufferedImage img, orig;
@@ -41,19 +42,19 @@ public class ApxPanel extends JPanel implements IInd {
         orig = o;
         WIDTH = o.getWidth();
         HEIGHT = o.getHeight();
-        poly_count = pc;
+        count = poly_count = pc;
         scale_factor = scf;
         polygons = new LinkedList<>();
         bg_col = c;
         Random rand = new Random();
-        for (int i = 0; i < poly_count; i++) {
+        for (int i = 0; i < MAX_POLY_COUNT; i++) {
             polygons.add(randPolygon(rand));
         }
         mut_prob = mp;
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         g2 = img.createGraphics();
-        refresh(true);
+        refresh();
     }
 
     private Color randColor() {
@@ -77,18 +78,12 @@ public class ApxPanel extends JPanel implements IInd {
     }
 
     @Override
-    public synchronized void refresh(boolean add) {
+    public synchronized void refresh() {
         // if (img == null) {
-        while (initialized < poly_count) {
-            if (add) {
-              //  polygons.add(randPolygon(rand));
-                initialized++;
-            }
-        }
         g2.setColor(bg_col);
         //g2.clearRect(0, 0, WIDTH, HEIGHT);
         g2.fillRect(0, 0, WIDTH, HEIGHT);
-        for (int i = 0; i < initialized; i++) {
+        for (int i = 0; i < count; i++) {
 
             g2.setColor(polygons.get(i).color);
             shape.setScale(polygons.get(i).scale);
@@ -100,8 +95,6 @@ public class ApxPanel extends JPanel implements IInd {
             double rot = polygons.get(i).rotation;
             xx = shape.basePoint.x;
             yy = shape.basePoint.y;
-            // x[0] = (int) (xx * Math.cos(rot) - yy * Math.sin(rot));
-            //y[0] = (int) (xx * Math.sin(rot) + yy * Math.cos(rot));
             x[0] = xx;
             y[0] = yy;
             for (Point p : shape.getPoints()) {
@@ -112,7 +105,6 @@ public class ApxPanel extends JPanel implements IInd {
 
                 j++;
             }
-            //shape.rotate(-polygons.get(i).rotation);
             g2.fillPolygon(x, y, j);
         }
     }
@@ -241,5 +233,14 @@ public class ApxPanel extends JPanel implements IInd {
     public void setScaleF(double f) {
         scale_factor = f;
     }
+
+    @Override
+    public synchronized void changeCount(boolean incr) {
+        if(incr && count < MAX_POLY_COUNT)
+            count++;
+        else if(count > 0)
+            count--;
+    }
+    
 
 }
