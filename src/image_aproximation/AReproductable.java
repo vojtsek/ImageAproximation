@@ -1,19 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package image_aproximation;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * 
+ * abstract class which defines generic type which is
+ * able to reproduce.
  */
-public abstract class ACross {
+public abstract class AReproductable {
     public abstract int getX();
     public abstract int getY();
     public abstract Color getColor();

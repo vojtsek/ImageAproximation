@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package image_aproximation;
 
 import java.awt.event.KeyAdapter;
@@ -13,7 +8,8 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * serves as generic adapter to handle the JTextFields which should accept only numbers
  */
 public abstract class NumFieldAdapter extends KeyAdapter {
 
@@ -26,6 +22,11 @@ public abstract class NumFieldAdapter extends KeyAdapter {
         fr = f;
     }
     
+    /**
+     * 
+     * @throws NumberFormatException 
+     * method run on each key release
+     */
     public abstract void doWork() throws NumberFormatException;
 
     public void keyPressed(KeyEvent e) {

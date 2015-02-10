@@ -1,19 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package image_aproximation;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
  */
 public class Image_aproximation {
 
     /**
      * @param args the command line arguments
+     * 
+     * invokes the GUI class
      */
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {

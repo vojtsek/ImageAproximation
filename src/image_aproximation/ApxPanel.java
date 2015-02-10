@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package image_aproximation;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,7 +12,10 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * class which represents one individual in the population
+ * it consists of polygons and its the only implementation of the IInd interface
+ * However, in the process of approximation any implementation could be used.
  */
 public class ApxPanel extends JPanel implements IInd {
 
@@ -57,14 +54,28 @@ public class ApxPanel extends JPanel implements IInd {
         refresh();
     }
 
+    /**
+     * 
+     * @return randomly generated RGB Color with alpha channel
+     */
     private Color randColor() {
         return new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), (float) Math.random());
     }
     
+    /**
+     * 
+     * @return provides a reference to the image associated with this panel
+     */
+    @Override
     public BufferedImage getImage() {
         return img;
     }
 
+    /**
+     * 
+     * @param rand Random object
+     * @return randomly generated polygon
+     */
     private PolyInst randPolygon(Random rand) {
         return new PolyInst(randColor(),
                 Math.random() * scale_factor,
@@ -72,16 +83,24 @@ public class ApxPanel extends JPanel implements IInd {
                 rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
     }
 
+    /**
+     * 
+     * @param p represents the probability
+     * sets the probability that mutation occurs during reproduction
+     */
     @Override
     public void setMutProb(double p) {
         mut_prob = p;
     }
 
+    /**
+     * refreshes the image associated to this panel
+     * based on the current values
+     * clears it first and then draws the polygons
+     */
     @Override
     public synchronized void refresh() {
-        // if (img == null) {
         g2.setColor(bg_col);
-        //g2.clearRect(0, 0, WIDTH, HEIGHT);
         g2.fillRect(0, 0, WIDTH, HEIGHT);
         for (int i = 0; i < count; i++) {
 
@@ -109,6 +128,12 @@ public class ApxPanel extends JPanel implements IInd {
         }
     }
 
+    /**
+     * 
+     * @param g Graphics instance
+     * 
+     * draws an Image and also the current value of the fitness function
+     */
     @Override
     protected void paintComponent(Graphics g
     ) {
@@ -118,24 +143,35 @@ public class ApxPanel extends JPanel implements IInd {
         g.drawString(Integer.toString(fitness), 10, 10);
     }
 
+    /**
+     * 
+     * @param poly list of polygon instances to substitute the current one
+     */
     @Override
     public void setContent(LinkedList<?> poly
     ) {
         polygons = (LinkedList<PolyInst>) poly;
     }
 
+    /**
+     * 
+     * @param i1 first parent
+     * @param i2 second parent
+     * 
+     * sets new polygons based on the parents and the mutation probability
+     */
     @Override
     public void setContent(IInd i1, IInd i2) {
-        LinkedList<? extends ACross> l1 = i1.getList();
-        LinkedList<? extends ACross> l2 = i2.getList();
+        LinkedList<? extends AReproductable> l1 = i1.getList();
+        LinkedList<? extends AReproductable> l2 = i2.getList();
         Random rand = new Random();
         int size = polygons.size();
         for (int i = 0; i < size; i++) {
-            ACross it = polygons.get(i), it1 = l1.get(i), it2 = l2.get(i);
+            AReproductable it = polygons.get(i), it1 = l1.get(i), it2 = l2.get(i);
             double r = Math.random();
-            if (r < mut_prob) {
+            /*if (r < mut_prob) {
                 it1 = it2 = randPolygon(rand);
-            }
+            }*/
             if (r < 0.5) {
                 it.setX(it2.getX());
             } else {
@@ -162,10 +198,25 @@ public class ApxPanel extends JPanel implements IInd {
             } else {
                 it.setRotation(it1.getRotation());
             }
+            if (Math.random() < mut_prob)
+                it.setColor(randColor());
+            if (Math.random() < mut_prob)
+                it.setScale(Math.random() * scale_factor);
+            if (Math.random() < mut_prob)
+                it.setRotation(Math.random() * Math.PI * 2);
+            if (Math.random() < mut_prob)
+                it.setX((int)(Math.random() * WIDTH));
+            if (Math.random() < mut_prob)
+                it.setY((int)(Math.random() * HEIGHT));
         }
 
     }
 
+    /**
+     * 
+     * @param how many pixels to jump over each iteration
+     * iterates pixels of the image and compares them to the original
+     */
     @Override
     public void computeFitness(int jump) {
         int argb, red, green, blue, alpha;
@@ -197,22 +248,41 @@ public class ApxPanel extends JPanel implements IInd {
 
     }
 
+    /**
+     * 
+     * @return current value of the fitness function
+     */
     @Override
     public int getFitness() {
         return fitness;
     }
 
+    /**
+     * 
+     * @param x
+     * @param y
+     * @return RGB value of the generated image on the current coordinates
+     */
     @Override
     public int getRGB(int x, int y
     ) {
         return img.getRGB(x, y);
     }
 
+    /**
+     * repaints the component, implements this method because of the interface
+     */
     @Override
     public void repaint() {
         super.repaint();
     }
 
+    /**
+     * 
+     * @param t another IInd instance
+     * @return which individual has greater fitness value
+     * serves to sort the population
+     */
     @Override
     public int compareTo(IInd t
     ) {
@@ -224,16 +294,29 @@ public class ApxPanel extends JPanel implements IInd {
         return 0;
     }
 
+    /**
+     * 
+     * @return current list of polygons
+     */
     @Override
-    public LinkedList<? extends ACross> getList() {
+    public LinkedList<? extends AReproductable> getList() {
         return polygons;
     }
 
+    /**
+     * 
+     * @param f new scaling factor to set
+     */
     @Override
     public void setScaleF(double f) {
         scale_factor = f;
     }
 
+    /**
+     * 
+     * @param incr whether increase or decrease the count
+     * increses or decreases the number of polygons used
+     */
     @Override
     public synchronized void changeCount(boolean incr) {
         if(incr && count < MAX_POLY_COUNT)
@@ -241,6 +324,4 @@ public class ApxPanel extends JPanel implements IInd {
         else if(count > 0)
             count--;
     }
-    
-
 }

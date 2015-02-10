@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package image_aproximation;
 
 import java.awt.*;
@@ -20,7 +15,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * 
+ * Main class of the program.
+ * Holds GUI components and uses the SwingWorker to run
+ * the approximation process.
  */
 public class GUI {
 
@@ -38,27 +37,28 @@ public class GUI {
     private final int HEIGHT = 550;
     private BufferedImage image;
     private Color bg_col = Color.BLACK;
+    private boolean stop = false;
 
-    final JButton incr_button = new JButton("Add polygon");
-    final JButton decr_button = new JButton("Remove polygon");
-    final JButton add_btt = new JButton("Add vertices");
-    final JLabel img_label = new JLabel("Image to aproximate:");
-    final JButton rm_btt = new JButton("Remove vertex");
-    final JButton start_btt = new JButton("Start");
-    final JButton stop_btt = new JButton("Stop");
-    final JTextField prop_txt = new JTextField(Double.toString(mutation_prop));
-    String[] sizes = {"5", "10", "15", "20", "25"};
-    final JComboBox size_list = new JComboBox(sizes);
-    final JTextField l_txt = new JTextField(Double.toString(lambda));
-    final JTextField height_txt = new JTextField(Integer.toString(img_height));
-    final JTextField s_txt = new JTextField(Integer.toString(survivors));
-    final JTextField sf_txt = new JTextField(Double.toString(scale_factor));
-    final JTextField polys_txt = new JTextField(Integer.toString(pop_size));
-    final JTextField fit_txt = new JTextField(Integer.toString(fitness_prec));
-    final JTextField width_txt = new JTextField(Integer.toString(img_width));
-    final JColorChooser col_chooser = new JColorChooser(Color.BLACK);
-    final JFrame col_frame = new JFrame();
-    final JButton col_picker = new JButton("Choose...");
+    private final JButton incr_button = new JButton("Add polygon");
+    private final JButton decr_button = new JButton("Remove polygon");
+    private final JButton add_btt = new JButton("Add vertices");
+    private final JLabel img_label = new JLabel("Image to aproximate:");
+    private final JButton rm_btt = new JButton("Remove vertex");
+    private final JButton start_btt = new JButton("Start");
+    private final JButton stop_btt = new JButton("Stop");
+    private final JTextField prop_txt = new JTextField(Double.toString(mutation_prop));
+    private String[] sizes = {"5", "10", "15", "20", "25"};
+    private final JComboBox size_list = new JComboBox(sizes);
+    private final JTextField l_txt = new JTextField(Double.toString(lambda));
+    private final JTextField height_txt = new JTextField(Integer.toString(img_height));
+    private final JTextField s_txt = new JTextField(Integer.toString(survivors));
+    private final JTextField sf_txt = new JTextField(Double.toString(scale_factor));
+    private final JTextField polys_txt = new JTextField(Integer.toString(pop_size));
+    private final JTextField fit_txt = new JTextField(Integer.toString(fitness_prec));
+    private final JTextField width_txt = new JTextField(Integer.toString(img_width));
+    private final JColorChooser col_chooser = new JColorChooser(Color.BLACK);
+    private final JFrame col_frame = new JFrame();
+    private final JButton col_picker = new JButton("Choose...");
 
     public GUI() {
         main_frame = new JFrame();
@@ -74,6 +74,10 @@ public class GUI {
 
     }
 
+    /**
+     * initialize and creates main layout
+     */
+    
     private void createLayout() {
         JButton load_btt = new JButton("Load new...");
         add_btt.addActionListener(new ActionListener() {
@@ -276,10 +280,13 @@ public class GUI {
                     protected String doInBackground() throws Exception {
                         int i = 0;
                         if (image_panel.getImage() == null) {
+                            JOptionPane.showMessageDialog(main_frame, "No image chosen.");
+                            enable(true);
                             return "No image chosen.";
                         }
+                        
                         if (poly_panel.polygon.getCount() < 3) {
-                            JOptionPane.showMessageDialog(main_frame, "Not a valid polygon");
+                            JOptionPane.showMessageDialog(main_frame, "Not a valid polygon.");
                             enable(true);
                             return "invalid polygon";
                         }
@@ -309,11 +316,6 @@ public class GUI {
             }
         });
 
-        try {
-            image = ImageIO.read(new File("/home/vojcek/Pictures/I_Myself.jpg"));
-            image_panel.setImage(image);
-        } catch (IOException ex) {
-        }
 
         constr.ipady = 4;
         constr.gridx = 0;
@@ -413,8 +415,10 @@ public class GUI {
 
     }
 
-    public boolean stop = false;
-
+    /**
+     * stops execution of the approximation and
+     * reset the components
+     */
     public void stopExecution() {
         poly_panel.reset();
         stop = true;
@@ -422,6 +426,12 @@ public class GUI {
         pp.takeShot();
         pp.dispose();
     }
+    
+    /**
+     * 
+     * @param en whether enable or disable the components
+     * changes enabled state of some components
+     */
 
     private void enable(boolean en) {
         size_list.setEnabled(en);
@@ -436,6 +446,11 @@ public class GUI {
         width_txt.setEditable(en);
         polys_txt.setEditable(en);
     }
+    
+    /**
+     * loads the image to approximate
+     * uses the JFileChooser component
+     */
 
     private void loadImage() {
         JFileChooser chooser = new JFileChooser();
@@ -447,11 +462,18 @@ public class GUI {
                 image_panel.setImage(image);
                 image_panel.repaint();
             } catch (IOException ioe) {
-                System.out.println("Failed to load " + chooser.getSelectedFile().getName());
+                System.err.println("Failed to load " + chooser.getSelectedFile().getName());
                 System.err.println(ioe.getMessage());
             }
         }
     }
+    
+    /**
+     * 
+     * @return new created JMenuBar
+     * 
+     * creates new JMenuBar
+     */
 
     private JMenuBar createMenu() {
         JMenuBar bar = new JMenuBar();

@@ -1,19 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package image_aproximation;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * class which represents single concrete object(polygon) that can reproduce.
+ * It only holds and offers some information about the object.
  */
-public class PolyInst extends ACross {
+public class PolyInst extends AReproductable {
     public Color color;
     public double scale;
     public double rotation;
@@ -75,8 +70,5 @@ public class PolyInst extends ACross {
     @Override
     public void setRotation(double fi) {
         this.rotation = fi;
-    }
-    
-    
-    
+    }   
 }

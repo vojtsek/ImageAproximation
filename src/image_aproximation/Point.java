@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package image_aproximation;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
+ * Helper class to hold the point in the plane.
  */
 public class Point {
     int x, y;

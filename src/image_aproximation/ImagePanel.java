@@ -1,21 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package image_aproximation;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 /**
  *
- * @author vojcek
+ * @author Vojtech Hudecek
  */
 public class ImagePanel extends JPanel {
 
@@ -32,20 +25,40 @@ public class ImagePanel extends JPanel {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
     }
 
+    /**
+     * 
+     * @return currently loaded image
+     */
     public BufferedImage getImage() {
         return image;
     }
 
+    /**
+     * 
+     * @param w new width
+     * sets new width and recomputes the dimensions
+     */
     public void setWidth(int w) {
         WIDTH = w;
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
     }
 
+    /**
+     * 
+     * @param h new height
+     *sets new height and recomputes the dimensions
+     */
     public void setHeight(int h) {
         HEIGHT = h;
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
     }
 
+    /**
+     * 
+     * @param img new image to set
+     * 
+     * sets the new image, computes dimensions appropriately
+     */
     public void setImage(BufferedImage img) {
         if (img != null) {
             double qw = ((double) WIDTH) / img.getWidth();
@@ -61,6 +74,11 @@ public class ImagePanel extends JPanel {
         }
     }
 
+    /**
+     * 
+     * @param g Graphics instance
+     * draws the associated image
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
