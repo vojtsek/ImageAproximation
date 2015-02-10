@@ -66,24 +66,11 @@ public class ProgressPane extends JFrame {
         fit_label = new JLabel("Fitness precision: " + fitness_prec);
         scale_label = new JLabel("Scale factor: " + scale_factor);
         shot_btt = new JButton("screenshot");
-        final JFrame fr = this;
         shot_btt.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                File outputfile = new File("image.png");
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileFilter(new FileNameExtensionFilter(
-                        "Accept JPG, PNG, GIF images", "jpg", "png", "gif"));
-                if (chooser.showOpenDialog(fr) == JFileChooser.APPROVE_OPTION) {
-                        outputfile = chooser.getSelectedFile();
-                }
-                try {
-                    ImageIO.write(individuals.get(0).getImage(), "png", outputfile);
-                } catch (IOException ioe) {
-                    System.err.println("Failed to write an image to file.");
-                    ioe.printStackTrace();
-                }
+                takeShot();
             }
         });
         pane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -96,10 +83,10 @@ public class ProgressPane extends JFrame {
         pane.add(l_label, constr);
         constr.gridy = 3;
         pane.add(s_label, constr);
-        
+
         constr.gridy = 4;
         pane.add(shot_btt, constr);
-        
+
         constr.gridx = cols / 2;
         constr.gridy = 0;
         pane.add(time_label, constr);
@@ -116,8 +103,8 @@ public class ProgressPane extends JFrame {
         initPopVis();
         pack();
         setVisible(true);
-        
-        Timer t = new Timer(10, new ActionListener() {
+
+        Timer t = new Timer(1000, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -126,11 +113,30 @@ public class ProgressPane extends JFrame {
                 int rem = time - hours * 3600;
                 int mins = rem / 60;
                 rem -= mins * 60;
-                String result = String.format("%02d:%02d:%02d", hours, mins, rem );
+                String result = String.format("%02d:%02d:%02d", hours, mins, rem);
                 time_label.setText("Elapsed time: " + result);
             }
         });
         t.start();
+    }
+
+    public void takeShot() {
+        File outputfile = new File("image.png");
+        JFileChooser chooser = new JFileChooser(outputfile);
+        chooser.setApproveButtonText("Save");
+        chooser.setDialogTitle("Save image to: ");
+        chooser.setFileFilter(new FileNameExtensionFilter(
+                "Accept JPG, PNG, GIF images", "jpg", "png", "gif"));
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            outputfile = chooser.getSelectedFile();
+            try {
+                ImageIO.write(individuals.get(0).getImage(), "png", outputfile);
+                JOptionPane.showMessageDialog(null, "Image saved to '" + outputfile.getAbsolutePath() + "'");
+            } catch (IOException ioe) {
+                System.err.println("Failed to write an image to file.");
+                ioe.printStackTrace();
+            }
+        }
     }
 
     public void setMutProp(double mp) {
@@ -152,26 +158,28 @@ public class ProgressPane extends JFrame {
         s_label.setText("Number of survivors: " + Integer.toString(survivors));
         population.setSurvivors(survivors);
     }
-    
+
     public void setScaleF(double f) {
         scale_factor = f;
         scale_label.setText("Scale factor: " + scale_factor);
-        for(IInd p : individuals) {
+        for (IInd p : individuals) {
             p.setScaleF(scale_factor);
         }
     }
-    
+
     public void changeCount(boolean incr) {
-        for(IInd i : individuals) {
+        for (IInd i : individuals) {
             i.changeCount(incr);
+            i.refresh();
+            i.repaint();
         }
-        if(incr) {
+        if (incr) {
             poly_label.setText("Number of polygons: " + (++pop_size));
-        } else if(pop_size > 0) {
+        } else if (pop_size > 0) {
             poly_label.setText("Number of polygons: " + (--pop_size));
         }
     }
-    
+
     public void setFitnessP(int p) {
         fitness_prec = p;
         fit_label.setText("Fitness precision: " + fitness_prec);
