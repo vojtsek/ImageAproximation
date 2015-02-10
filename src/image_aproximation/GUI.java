@@ -39,13 +39,34 @@ public class GUI {
     private BufferedImage image;
     private Color bg_col = Color.BLACK;
 
+    final JButton incr_button = new JButton("Add polygon");
+    final JButton decr_button = new JButton("Remove polygon");
+    final JButton add_btt = new JButton("Add vertices");
+    final JLabel img_label = new JLabel("Image to aproximate:");
+    final JButton rm_btt = new JButton("Remove vertex");
+    final JButton start_btt = new JButton("Start");
+    final JButton stop_btt = new JButton("Stop");
+    final JTextField prop_txt = new JTextField(Double.toString(mutation_prop));
+    String[] sizes = {"5", "10", "15", "20", "25"};
+    final JComboBox size_list = new JComboBox(sizes);
+    final JTextField l_txt = new JTextField(Double.toString(lambda));
+    final JTextField height_txt = new JTextField(Integer.toString(img_height));
+    final JTextField s_txt = new JTextField(Integer.toString(survivors));
+    final JTextField sf_txt = new JTextField(Double.toString(scale_factor));
+    final JTextField polys_txt = new JTextField(Integer.toString(pop_size));
+    final JTextField fit_txt = new JTextField(Integer.toString(fitness_prec));
+    final JTextField width_txt = new JTextField(Integer.toString(img_width));
+    final JColorChooser col_chooser = new JColorChooser(Color.BLACK);
+    final JFrame col_frame = new JFrame();
+    final JButton col_picker = new JButton("Choose...");
+
     public GUI() {
         main_frame = new JFrame();
         main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         main_frame.setJMenuBar(createMenu());
         pane = main_frame.getContentPane();
         pane.setLayout(new GridBagLayout());
-       // pane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        // pane.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         constr = new GridBagConstraints();
         createLayout();
         main_frame.pack();
@@ -55,7 +76,6 @@ public class GUI {
 
     private void createLayout() {
         JButton load_btt = new JButton("Load new...");
-        final JButton add_btt = new JButton("Add vertices");
         add_btt.addActionListener(new ActionListener() {
 
             @Override
@@ -63,7 +83,7 @@ public class GUI {
                 poly_panel.setAdding();
             }
         });
-        final JButton rm_btt = new JButton("Remove vertex");
+
         rm_btt.addActionListener(new ActionListener() {
 
             @Override
@@ -71,9 +91,8 @@ public class GUI {
                 poly_panel.remove();
             }
         });
-        final JLabel img_label = new JLabel("Image to aproximate:");
+
         JLabel poly_label = new JLabel("Polygon shape:");
-        final JButton start_btt = new JButton("Start");
 
         load_btt.addActionListener(new ActionListener() {
 
@@ -83,7 +102,6 @@ public class GUI {
             }
         });
         JLabel prop_label = new JLabel("Mutation propability: ");
-        final JTextField prop_txt = new JTextField(Double.toString(mutation_prop));
         prop_txt.addKeyListener(new NumFieldAdapter(prop_txt, main_frame) {
 
             @Override
@@ -96,8 +114,6 @@ public class GUI {
             }
         });
 
-        String[] sizes = {"5", "10", "15", "20", "25"};
-        final JComboBox size_list = new JComboBox(sizes);
         size_list.setSelectedIndex(2);
         JLabel size_label = new JLabel("Population size: ");
         size_list.addActionListener(new ActionListener() {
@@ -110,9 +126,8 @@ public class GUI {
         });
 
         JLabel l_label = new JLabel("Lambda parameter: ");
-        final JTextField l_txt = new JTextField(Double.toString(lambda));
         l_txt.addKeyListener(new NumFieldAdapter(l_txt, main_frame) {
-            
+
             @Override
             public void doWork() throws NumberFormatException {
                 double l = Double.parseDouble(l_txt.getText());
@@ -124,9 +139,8 @@ public class GUI {
         });
 
         JLabel s_label = new JLabel("Number of survivors: ");
-        final JTextField s_txt = new JTextField(Integer.toString(survivors));
         s_txt.addKeyListener(new NumFieldAdapter(s_txt, main_frame) {
-            
+
             @Override
             public void doWork() throws NumberFormatException {
                 int s = Integer.parseInt(s_txt.getText());
@@ -138,9 +152,8 @@ public class GUI {
         });
 
         JLabel sf_label = new JLabel("Scale factor: ");
-        final JTextField sf_txt = new JTextField(Double.toString(scale_factor));
         sf_txt.addKeyListener(new NumFieldAdapter(sf_txt, main_frame) {
-            
+
             @Override
             public void doWork() throws NumberFormatException {
                 double s = Double.parseDouble(sf_txt.getText());
@@ -152,9 +165,8 @@ public class GUI {
         });
 
         JLabel polys_label = new JLabel("Number of polygons: ");
-        final JTextField polys_txt = new JTextField(Integer.toString(pop_size));
         polys_txt.addKeyListener(new NumFieldAdapter(polys_txt, main_frame) {
-            
+
             @Override
             public void doWork() throws NumberFormatException {
                 int s = Integer.parseInt(polys_txt.getText());
@@ -163,9 +175,8 @@ public class GUI {
         });
 
         JLabel fit_label = new JLabel("Fitness precission: ");
-        final JTextField fit_txt = new JTextField(Integer.toString(fitness_prec));
         fit_txt.addKeyListener(new NumFieldAdapter(fit_txt, main_frame) {
-            
+
             @Override
             public void doWork() throws NumberFormatException {
                 int s = Integer.parseInt(fit_txt.getText());
@@ -175,11 +186,10 @@ public class GUI {
                 }
             }
         });
-        
+
         JLabel width_label = new JLabel("Width: ");
-        final JTextField width_txt = new JTextField(Integer.toString(img_width));
         width_txt.addKeyListener(new NumFieldAdapter(width_txt, main_frame) {
-            
+
             @Override
             public void doWork() throws NumberFormatException {
                 int s = Integer.parseInt(width_txt.getText());
@@ -190,11 +200,10 @@ public class GUI {
                 main_frame.pack();
             }
         });
-        
+
         JLabel height_label = new JLabel("Height: ");
-        final JTextField height_txt = new JTextField(Integer.toString(img_height));
         height_txt.addKeyListener(new NumFieldAdapter(height_txt, main_frame) {
-            
+
             @Override
             public void doWork() throws NumberFormatException {
                 int s = Integer.parseInt(height_txt.getText());
@@ -205,13 +214,10 @@ public class GUI {
                 main_frame.pack();
             }
         });
-        
+
         JLabel col_label = new JLabel("Default background color: ");
-        final JColorChooser col_chooser = new JColorChooser(Color.BLACK);
-        final JFrame col_frame = new JFrame();
         col_frame.add(col_chooser);
         col_frame.pack();
-        final JButton col_picker = new JButton("Choose...");
         col_picker.setBackground(bg_col);
         col_chooser.getSelectionModel().addChangeListener(new ChangeListener() {
 
@@ -229,26 +235,41 @@ public class GUI {
                 col_frame.setVisible(true);
             }
         });
-        
 
-        start_btt.addActionListener(new ActionListener() {
-
-            private void enable(boolean en) {
-                size_list.setEnabled(en);
-                rm_btt.setEnabled(en);
-                add_btt.setEnabled(en);
-                start_btt.setEnabled(en);
-                polys_txt.setEditable(en);
-                col_picker.setEnabled(en);
-                height_txt.setEditable(en);
-                width_txt.setEditable(en);
-            }
+        incr_button.setEnabled(false);
+        incr_button.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                //poly_panel.polygon.
+                pp.changeCount(true);
+            }
+        });
+
+        decr_button.setEnabled(false);
+        decr_button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                pp.changeCount(false);
+            }
+        });
+
+        stop_btt.setEnabled(false);
+        stop_btt.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                stopExecution();
+            }
+        });
+
+        start_btt.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
 
                 enable(false);
+                stop = false;
                 sw = new SwingWorker<String, String>() {
 
                     @Override
@@ -268,19 +289,15 @@ public class GUI {
                         pp.addWindowListener(new WindowAdapter() {
                             @Override
                             public void windowClosing(WindowEvent we) {
-                                poly_panel.reset();
-                                enable(true);
+                                stopExecution();
                             }
                         });
                         pp.setLocation(WIDTH, 0);
-                        while (true) {
-                            if (i++ % 2 == 0) {
+                        while (!stop) {
+                            if (i++ % 1 == 0) {
                                 pp.next(true);
                             } else {
                                 pp.next(false);
-                            }
-                            if (i > 100000) {
-                                break;
                             }
                         }
                         return "OK";
@@ -289,7 +306,6 @@ public class GUI {
                 };
 
                 sw.execute();
-
             }
         });
 
@@ -297,8 +313,8 @@ public class GUI {
             image = ImageIO.read(new File("/home/vojcek/Pictures/I_Myself.jpg"));
             image_panel.setImage(image);
         } catch (IOException ex) {
-
         }
+
         constr.ipady = 4;
         constr.gridx = 0;
         constr.gridy = 1;
@@ -322,7 +338,7 @@ public class GUI {
         constr.gridx = 2;
         pane.add(rm_btt, constr);
         constr.ipady = 10;
-        
+
         constr.gridx = 0;
         constr.gridy = 4;
         pane.add(width_label, constr);
@@ -370,22 +386,55 @@ public class GUI {
         pane.add(prop_label, constr);
         constr.gridx = 1;
         pane.add(prop_txt, constr);
-        
+
         constr.gridx = 2;
         constr.gridy = 6;
         pane.add(fit_label, constr);
         constr.gridx = 3;
         pane.add(fit_txt, constr);
-        
+
         constr.gridx = 2;
         constr.gridy = 8;
         pane.add(col_label, constr);
         constr.gridx = 3;
         pane.add(col_picker, constr);
-        
-        constr.gridy = 9;
-        pane.add(start_btt, constr);
 
+        constr.gridy = 9;
+        constr.gridx = 0;
+        pane.add(incr_button, constr);
+        constr.gridx = 1;
+        pane.add(decr_button, constr);
+
+        constr.gridy = 10;
+        constr.gridx = 3;
+        pane.add(start_btt, constr);
+        constr.gridx = 2;
+        pane.add(stop_btt, constr);
+
+    }
+
+    public boolean stop = false;
+
+    public void stopExecution() {
+        poly_panel.reset();
+        stop = true;
+        enable(true);
+        pp.takeShot();
+        pp.dispose();
+    }
+
+    private void enable(boolean en) {
+        size_list.setEnabled(en);
+        rm_btt.setEnabled(en);
+        add_btt.setEnabled(en);
+        start_btt.setEnabled(en);
+        col_picker.setEnabled(en);
+        stop_btt.setEnabled(!en);
+        incr_button.setEnabled(!en);
+        decr_button.setEnabled(!en);
+        height_txt.setEditable(en);
+        width_txt.setEditable(en);
+        polys_txt.setEditable(en);
     }
 
     private void loadImage() {
@@ -407,7 +456,6 @@ public class GUI {
     private JMenuBar createMenu() {
         JMenuBar bar = new JMenuBar();
         JMenu file_menu = new JMenu("File");
-        JMenu opt_menu = new JMenu("Options");
 
         JMenuItem load = new JMenuItem("Load Image");
         JMenuItem exit = new JMenuItem("Exit");
@@ -429,7 +477,6 @@ public class GUI {
         file_menu.add(exit);
 
         bar.add(file_menu);
-        bar.add(opt_menu);
         return bar;
     }
 }
