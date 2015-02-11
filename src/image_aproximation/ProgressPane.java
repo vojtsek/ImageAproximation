@@ -13,9 +13,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
- * @author Vojtech Hudecek
- * class extending JFrame, provides visualization of the current process
- * and serves as the middle point between the population handler itself and the swingworker
+ * @author Vojtech Hudecek class extending JFrame, provides visualization of the
+ * current process and serves as the middle point between the population handler
+ * itself and the swingworker
  */
 public class ProgressPane extends JFrame {
 
@@ -53,7 +53,7 @@ public class ProgressPane extends JFrame {
         lambda = l;
         survivors = s;
         pop_count = pc;
-        mut_label = new JLabel("Mutation propability: " + Double.toString(mut_prop));
+        mut_label = new JLabel("Mutation probability: " + Double.toString(mut_prop));
         l_label = new JLabel("Lambda parameter: " + Double.toString(lambda));
         s_label = new JLabel("Number of survivors: " + Integer.toString(survivors));
         poly_label = new JLabel("Number of polygons: " + pop_size);
@@ -95,7 +95,8 @@ public class ProgressPane extends JFrame {
         polygon.setScale(p.getScale());
         polygon.setVertices(p.getPoints());
         orig = o;
-        initPopVis();
+        individuals = new LinkedList<>();
+        initPopVis(false);
         pack();
         setVisible(true);
 
@@ -138,22 +139,21 @@ public class ProgressPane extends JFrame {
     }
 
     /**
-     * 
-     * @param mp value of probability
-     * changes the mutation probability
+     *
+     * @param mp value of probability changes the mutation probability
      */
     public void setMutProp(double mp) {
         mut_prop = mp;
-        mut_label.setText("Mutation propability: " + mut_prop);
+        mut_label.setText("Mutation probability: " + mut_prop);
         for (IInd i : individuals) {
             i.setMutProb(mut_prop);
         }
     }
 
     /**
-     * 
-     * @param l new value of the parameter
-     * sets the new value of the parameter of the exponential distribution
+     *
+     * @param l new value of the parameter sets the new value of the parameter
+     * of the exponential distribution
      */
     public void setLambda(double l) {
         lambda = l;
@@ -162,9 +162,9 @@ public class ProgressPane extends JFrame {
     }
 
     /**
-     * 
-     * @param s new number of survivors
-     * changes the number of individuals that are copied directly to the next generation
+     *
+     * @param s new number of survivors changes the number of individuals that
+     * are copied directly to the next generation
      */
     public void setSurv(int s) {
         survivors = s;
@@ -173,7 +173,7 @@ public class ProgressPane extends JFrame {
     }
 
     /**
-     * 
+     *
      * @param f new scale factor to set
      */
     public void setScaleF(double f) {
@@ -185,9 +185,9 @@ public class ProgressPane extends JFrame {
     }
 
     /**
-     * 
-     * @param incr whether increment or decrement the count
-     * changes the count of objects in each generation
+     *
+     * @param incr whether increment or decrement the count changes the count of
+     * objects in each generation
      */
     public void changeCount(boolean incr) {
         for (IInd i : individuals) {
@@ -203,7 +203,7 @@ public class ProgressPane extends JFrame {
     }
 
     /**
-     * 
+     *
      * @param p new fitness function precision to set
      */
     public void setFitnessP(int p) {
@@ -215,32 +215,40 @@ public class ProgressPane extends JFrame {
     /**
      * initializes the grid which holds members of the generation
      */
-    public void initPopVis() {
-        individuals = new LinkedList<>();
+    public void initPopVis(boolean filled) {
+
         constr.ipadx = 1;
         constr.ipady = 1;
         constr.gridwidth = 1;
+        int idx = 0;
         for (int i = 0; i < rows; i++) {
             constr.gridy = i + 6;
             for (int j = 0; j < cols; j++) {
                 constr.gridx = j;
-                ApxPanel pnl = new ApxPanel(polygon, orig, pop_size,
-                        mut_prop, scale_factor, bg_col);
-                pane.add(pnl, constr);
-                individuals.add(pnl);
+                if (!filled) {
+                    ApxPanel pnl = new ApxPanel(polygon, orig, pop_size,
+                            mut_prop, scale_factor, bg_col);
+                    pane.add(pnl, constr);
+                    individuals.add(pnl);
+                } else {
+                    pane.add((JPanel)individuals.get(idx++), constr);
+                }
             }
         }
-        population = new Population(individuals, pop_count, lambda, survivors, fitness_prec);
-        population.reproduce(true);
+        if (!filled) {
+            population = new Population(individuals, pop_count, lambda, survivors, fitness_prec);
+            population.reproduce(true);
+        }
     }
 
     /**
-     * 
-     * @param rep whether repaint after the reproduction or not
-     * triggers the reproduction step
+     *
+     * @param rep whether repaint after the reproduction or not triggers the
+     * reproduction step
      */
     public void next(boolean rep) {
         gen_label.setText("Generation no.: " + Integer.toString(gens++));
         population.reproduce(rep);
+        initPopVis(true);
     }
 }

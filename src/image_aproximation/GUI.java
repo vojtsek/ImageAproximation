@@ -111,7 +111,7 @@ public class GUI {
                 loadImage();
             }
         });
-        JLabel prop_label = new JLabel("Mutation propability: ");
+        JLabel prop_label = new JLabel("Mutation probability: ");
         prop_txt.addKeyListener(new NumFieldAdapter(prop_txt, main_frame) {
 
             @Override
