@@ -153,6 +153,21 @@ public class ApxPanel extends JPanel implements IInd {
         polygons = (LinkedList<PolyInst>) poly;
     }
 
+    private int smallDiff(int range) {
+        double r1 = Math.random(), r2 = Math.random();
+        if (r1 < 0.5)
+            return (int)(r2 * range);
+        return (int)(-1 * r2 * range);
+    }
+    
+    private int change(int value, int min, int max, int range) {
+        value += smallDiff(range);
+        if(value < min)
+            return min;
+        else if(value > max)
+            return max;
+        return value;   
+    }
     /**
      * 
      * @param i1 first parent
@@ -161,7 +176,7 @@ public class ApxPanel extends JPanel implements IInd {
      * sets new polygons based on the parents and the mutation probability
      */
     @Override
-    public void setContent(IInd i1, IInd i2) {
+    public synchronized void setContent(IInd i1, IInd i2) {
         LinkedList<? extends AReproductable> l1 = i1.getList();
         LinkedList<? extends AReproductable> l2 = i2.getList();
         Random rand = new Random();
@@ -169,6 +184,7 @@ public class ApxPanel extends JPanel implements IInd {
         for (int i = 0; i < size; i++) {
             AReproductable it = polygons.get(i), it1 = l1.get(i), it2 = l2.get(i);
             double r = Math.random();
+            double m = 0.008;
             if (r < mut_prob) {
                 it1 = it2 = randPolygon(rand);
             }
@@ -177,26 +193,55 @@ public class ApxPanel extends JPanel implements IInd {
             } else {
                 it.setX(it1.getX());
             }
+            
+            if(Math.random() < m) {
+                it.setX(change(it.getX(), 0, WIDTH, 10));
+            }
+            
             if (r < 0.5) {
                 it.setY(it2.getY());
             } else {
                 it.setY(it1.getY());
             }
+            
+            if(Math.random() < m) {
+                it.setY(change(it.getY(), 0, HEIGHT, 10));
+            }
+            
             if (r < 0.5) {
                 it.setColor(it2.getColor());
             } else {
                 it.setColor(it1.getColor());
             }
+            
+            if(Math.random() < m) {
+                Color col = it.getColor();
+                Color c = new Color(change(col.getRed(), 0, 255, 10),
+                        change(col.getGreen(), 0, 255, 10),
+                        change(col.getBlue(), 0, 255, 10),
+                        change(col.getAlpha(), 0, 255, 10)
+                );
+                it.setColor(c);
+            }
+            
             if (r < 0.5) {
                 it.setScale(it2.getScale());
             } else {
                 it.setScale(it1.getScale());
+            }
+            
+            if(Math.random() < m) {
+                it.setScale(it.getScale() * Math.random() * scale_factor);
             }
 
             if (r < 0.5) {
                 it.setRotation(it2.getRotation());
             } else {
                 it.setRotation(it1.getRotation());
+            }
+            
+            if(Math.random() < m) {
+                it.setRotation(it.getRotation() * Math.random());
             }
         }
 
